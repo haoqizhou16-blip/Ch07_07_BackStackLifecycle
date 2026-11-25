@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Fragment 返回栈</string>
+
+    <string name="page_title">Fragment 返回栈与视图生命周期</string>
+    <string name="page_subtitle">Demo 21　TAG = BackStackLifecycle</string>
+    <string name="stack_depth_format">返回栈深度：%1$d</string>
+    <string name="stack_depth_default">返回栈深度：0</string>
+    <string name="footer_hint">按系统返回键回退；Logcat 过滤 BackStackLifecycle 观察完整序列</string>
+
+    <string name="fragment_a_title">Fragment A</string>
+    <string name="fragment_a_desc">当前 A 在前台：Fragment 生命周期与视图生命周期都在 RESUMED。\n本页用两种方式观察同一个 LiveData，进入 B 后再回来对比日志。</string>
+    <string name="fragment_a_last_message_label">最近收到的数据</string>
+    <string name="fragment_a_no_message">暂无（先进入 B 发送一条数据）</string>
+    <string name="btn_goto_b">跳转到 Fragment B（replace + addToBackStack）</string>
+
+    <string name="fragment_b_title">Fragment B</string>
+    <string name="fragment_b_desc">B 是用 replace + addToBackStack 加进来的，A 的视图已被销毁（onDestroyView），但 A 的 Fragment 实例还留在返回栈里。</string>
+    <string name="fragment_b_tip">点"发送一条数据"：A 的两个观察者都在 LiveData 里，但只有回到 A 之后才会看到回调差异。</string>
+    <string name="btn_post">发送一条数据（LiveData setValue）</string>
+    <string name="btn_back">返回 Fragment A（popBackStack）</string>
+    <string name="post_count_format">已发送：%1$d 条</string>
+</resources>

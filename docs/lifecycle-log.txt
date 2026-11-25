@@ -1,0 +1,92 @@
+
+===== ① 启动：A 首次进入前台 =====
+[Activity] onCreate
+[Activity] 首次添加 Fragment A（不入栈）
+[A] onAttach
+[A] onCreate
+[A] onCreateView（视图开始创建）
+[A] onViewCreated（视图已就绪，可以绑定控件）
+[ViewModel] 注册观察者 A[viewLifecycleOwner]，累计注册次数 = 1
+[ViewModel] 注册观察者 A[this]，累计注册次数 = 2
+[A] onStart
+[A] onResume
+
+===== ② 点『跳转到 B』：replace + addToBackStack，A 的视图被销毁 =====
+[A] 点击跳转：replace + addToBackStack("B")，A 的视图将被销毁
+[A] onPause
+[A] onStop
+[B] onAttach
+[B] onCreate
+[B] onCreateView（视图开始创建）
+[B] onViewCreated（视图已就绪，可以绑定控件）
+[B] onStart
+[A] onDestroyView（视图销毁，但 Fragment 实例仍在返回栈中）
+[B] onResume
+[FragmentManager] 返回栈深度 = 1，栈顶 = B
+
+===== ③ 在 B 里 setValue：A 的 this 观察者处于 CREATED，不会收到 =====
+[ViewModel] setValue(第 1 条数据)，历史累计注册观察者 = 2
+
+===== ④ 点『返回 A』：popBackStack，A 的视图重建，两个观察者又被注册一次 =====
+[B] 点击返回：popBackStack()，出栈回到 A
+[B] onPause
+[B] onStop
+[A] onCreateView（视图开始创建）
+[A] onViewCreated（视图已就绪，可以绑定控件）
+[ViewModel] 注册观察者 A[viewLifecycleOwner]，累计注册次数 = 3
+[ViewModel] 注册观察者 A[this]，累计注册次数 = 4
+[A] onStart
+[A][this] 收到 = 第 1 条数据，getView() = 非空
+[A][this] 收到 = 第 1 条数据，getView() = 非空
+[A][viewLifecycleOwner] 收到 = 第 1 条数据
+[B] onDestroyView（视图销毁，但 Fragment 实例仍在返回栈中）
+[B] onDestroy
+[B] onDetach
+[A] onResume
+[FragmentManager] 返回栈深度 = 0，栈顶 = （空，返回键将退出 Activity）
+
+===== ⑤ 再次 setValue：this 观察者的重复回调 =====
+[ViewModel] setValue(第 2 条数据)，历史累计注册观察者 = 4
+[A][this] 收到 = 第 2 条数据，getView() = 非空
+[A][viewLifecycleOwner] 收到 = 第 2 条数据
+[A][this] 收到 = 第 2 条数据，getView() = 非空
+
+===== ⑥ 再进 B =====
+[A] 点击跳转：replace + addToBackStack("B")，A 的视图将被销毁
+[A] onPause
+[A] onStop
+[B] onAttach
+[B] onCreate
+[B] onCreateView（视图开始创建）
+[B] onViewCreated（视图已就绪，可以绑定控件）
+[B] onStart
+[A] onDestroyView（视图销毁，但 Fragment 实例仍在返回栈中）
+[B] onResume
+[FragmentManager] 返回栈深度 = 1，栈顶 = B
+
+===== ⑦ 按系统返回键：FragmentManager 自动回退到 A =====
+[B] onPause
+[B] onStop
+[A] onCreateView（视图开始创建）
+[A] onViewCreated（视图已就绪，可以绑定控件）
+[ViewModel] 注册观察者 A[viewLifecycleOwner]，累计注册次数 = 5
+[ViewModel] 注册观察者 A[this]，累计注册次数 = 6
+[A] onStart
+[A][this] 收到 = 第 2 条数据，getView() = 非空
+[A][viewLifecycleOwner] 收到 = 第 2 条数据
+[B] onDestroyView（视图销毁，但 Fragment 实例仍在返回栈中）
+[B] onDestroy
+[B] onDetach
+[A] onResume
+[FragmentManager] 返回栈深度 = 0，栈顶 = （空，返回键将退出 Activity）
+
+===== ⑧ 在 A 上按返回：返回栈为空，Activity 结束 =====
+[验证] 返回栈深度 = 0，activity.isFinishing() = true
+
+===== ⑨ 页面销毁：Fragment A 最后走完 onDestroy / onDetach =====
+[A] onPause
+[A] onStop
+[A] onDestroyView（视图销毁，但 Fragment 实例仍在返回栈中）
+[A] onDestroy
+[A] onDetach
+[Activity] onDestroy
