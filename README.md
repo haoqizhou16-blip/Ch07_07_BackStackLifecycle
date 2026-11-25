@@ -99,7 +99,7 @@ viewModel.getMessage().observe(this, value -> {
 
 ## 五、记录一：返回栈场景的生命周期序列
 
-以下内容全部来自真机/容器上实际运行输出的日志（完整原文见 [`docs/lifecycle-log.txt`](./docs/lifecycle-log.txt)，`===== ① …` 分段与下表一一对应）。
+以下内容全部来自本工程实际运行输出的日志（完整原文见 [`docs/lifecycle-log.txt`](./docs/lifecycle-log.txt)，`===== ① …` 分段与下表一一对应）。
 
 ### ① 启动，A 首次进入
 
